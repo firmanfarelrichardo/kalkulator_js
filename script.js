@@ -30,7 +30,7 @@ class Calculator {
             this.resetScreen = false;
         }
         
-        // Fix: Input titik di awal otomatis jadi "0."
+        // Handle leading dot: input "." becomes "0."
         if (number === '.') {
             if (this.currentOperand.includes('.')) return;
             if (this.currentOperand === '') {
@@ -43,7 +43,7 @@ class Calculator {
     }
 
     chooseOperation(operation) {
-        // Fix: Support Unary Minus (Input angka negatif di awal)
+        // Support Unary Minus (Negative numbers at start)
         if (this.currentOperand === '') {
             if (operation === '-') {
                 this.currentOperand = '-';
@@ -52,7 +52,7 @@ class Calculator {
             return;
         }
 
-        // Fix: Mencegah input operator jika layar hanya berisi "-"
+        // Prevent operator input if screen only has "-"
         if (this.currentOperand === '-') return;
 
         this.operationBuffer.push(parseFloat(this.currentOperand));
@@ -62,19 +62,20 @@ class Calculator {
 
     compute() {
         if (this.currentOperand === '' && this.operationBuffer.length === 0) return;
-        if (this.currentOperand === '-') return; // Safety check
+        if (this.currentOperand === '-') return; 
 
+        // 1. Create Expression String for History (Before calculation)
         let expressionString = this.operationBuffer.join(' ') + ' ' + this.currentOperand;
 
         if (this.currentOperand !== '') {
             this.operationBuffer.push(parseFloat(this.currentOperand));
         }
 
-        // --- Logic PEMDAS/BODMAS ---
+        // 2. PEMDAS Logic Implementation
         let tempBuffer = [];
         let i = 0;
 
-        // Pass 1: Perkalian & Pembagian
+        // Pass 1: Multiplication and Division
         while (i < this.operationBuffer.length) {
             let currentItem = this.operationBuffer[i];
             
@@ -95,7 +96,7 @@ class Calculator {
                     result = prevNum / nextNum;
                 }
                 
-                // Fix: Presisi Floating Point (0.1 + 0.2)
+                // Fix floating point precision (e.g. 0.1 + 0.2)
                 tempBuffer.push(parseFloat(result.toPrecision(12)));
                 i += 2; 
             } else {
@@ -104,7 +105,7 @@ class Calculator {
             }
         }
 
-        // Pass 2: Penambahan & Pengurangan
+        // Pass 2: Addition and Subtraction
         let finalResult = tempBuffer[0];
         for (let j = 1; j < tempBuffer.length; j += 2) {
             let operator = tempBuffer[j];
@@ -114,22 +115,29 @@ class Calculator {
             else if (operator === '-') finalResult -= nextNum;
         }
 
-        // Final Precision check
+        // Final precision check
         finalResult = parseFloat(finalResult.toPrecision(12));
 
+        // 3. Save to History
         this.addToHistory(expressionString, finalResult);
+
         this.currentOperand = finalResult;
         this.operationBuffer = [];
         this.resetScreen = true;
     }
 
+    // --- MEMORY FUNCTIONS ---
     memoryClear() {
         this.memory = 0;
-        this.currentOperand = ''; // Optional feedback visual
+        // Visual Feedback (Flash "MC")
+        const prev = this.currentOperandTextElement.innerText;
+        this.currentOperandTextElement.innerText = "Mem Clr";
+        setTimeout(() => this.updateDisplay(), 600);
     }
 
     memoryRecall() {
         this.currentOperand = this.memory;
+        this.resetScreen = true;
     }
 
     memoryPlus() {
@@ -138,6 +146,10 @@ class Calculator {
         if (isNaN(current)) return;
         this.memory += current;
         this.resetScreen = true;
+        
+        // Visual Feedback
+        this.currentOperandTextElement.innerText = "Saved";
+        setTimeout(() => this.updateDisplay(), 400);
     }
 
     memoryMinus() {
@@ -146,24 +158,33 @@ class Calculator {
         if (isNaN(current)) return;
         this.memory -= current;
         this.resetScreen = true;
+        
+        // Visual Feedback
+        this.currentOperandTextElement.innerText = "Saved";
+        setTimeout(() => this.updateDisplay(), 400);
     }
 
+    // --- HISTORY FUNCTIONS ---
     addToHistory(expression, result) {
         this.history.unshift({ expression, result });
+        
+        // Maintain only 5 items
         if (this.history.length > 5) {
             this.history.pop();
         }
+        
         this.updateHistoryUI();
     }
 
     updateHistoryUI() {
         this.historyListElement.innerHTML = '';
+        
         this.history.forEach(item => {
             const li = document.createElement('li');
-            li.className = "border-b border-dashed border-gray-400 pb-2 mb-2";
+            li.className = "bg-white p-3 rounded-lg shadow-sm border border-gray-200 animate-[fadeIn_0.3s_ease-out]";
             li.innerHTML = `
-                <div class="text-right text-xs text-gray-500 font-mono">${item.expression}</div>
-                <div class="text-right text-lg font-bold text-gray-700 font-mono">= ${this.getDisplayNumber(item.result)}</div>
+                <div class="text-right text-xs text-gray-500 font-mono mb-1 tracking-wider">${item.expression}</div>
+                <div class="text-right text-lg font-bold text-gray-800 font-mono border-t border-dashed border-gray-300 pt-1">= ${this.getDisplayNumber(item.result)}</div>
             `;
             this.historyListElement.appendChild(li);
         });
@@ -193,13 +214,16 @@ class Calculator {
     }
 }
 
-// --- INITIALIZATION ---
+// --- DOM INITIALIZATION ---
 const previousOperandTextElement = document.querySelector('[data-previous-operand]');
 const currentOperandTextElement = document.querySelector('[data-current-operand]');
 const historyListElement = document.getElementById('history-list');
 
 const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement, historyListElement);
 
+// --- EVENT LISTENERS ---
+
+// Numbers
 document.querySelectorAll('[data-number]').forEach(button => {
     button.addEventListener('click', () => {
         calculator.appendNumber(button.innerText);
@@ -207,6 +231,7 @@ document.querySelectorAll('[data-number]').forEach(button => {
     });
 });
 
+// Operations
 document.querySelectorAll('[data-operation]').forEach(button => {
     button.addEventListener('click', () => {
         calculator.chooseOperation(button.innerText);
@@ -214,45 +239,34 @@ document.querySelectorAll('[data-operation]').forEach(button => {
     });
 });
 
+// Calculate
 document.querySelector('[data-action="calculate"]').addEventListener('click', () => {
     calculator.compute();
     calculator.updateDisplay();
 });
 
+// Clear
 document.querySelector('[data-action="clear"]').addEventListener('click', () => {
     calculator.clear();
     calculator.updateDisplay();
 });
 
+// Clear Entry
 document.querySelector('[data-action="clear-entry"]').addEventListener('click', () => {
     calculator.clearEntry();
     calculator.updateDisplay();
 });
 
 // Memory Buttons
-document.querySelector('[data-action="memory-plus"]').addEventListener('click', () => {
-    calculator.memoryPlus();
-    // Visual feedback kecil (opsional, reset screen agar user tahu input tersimpan)
-    const prev = currentOperandTextElement.innerText;
-    currentOperandTextElement.innerText = "Saved!";
-    setTimeout(() => currentOperandTextElement.innerText = prev, 500);
-});
-document.querySelector('[data-action="memory-minus"]').addEventListener('click', () => {
-    calculator.memoryMinus();
-    const prev = currentOperandTextElement.innerText;
-    currentOperandTextElement.innerText = "Saved!";
-    setTimeout(() => currentOperandTextElement.innerText = prev, 500);
-});
+document.querySelector('[data-action="memory-plus"]').addEventListener('click', () => calculator.memoryPlus());
+document.querySelector('[data-action="memory-minus"]').addEventListener('click', () => calculator.memoryMinus());
 document.querySelector('[data-action="memory-recall"]').addEventListener('click', () => {
     calculator.memoryRecall();
     calculator.updateDisplay();
 });
-document.querySelector('[data-action="memory-clear"]').addEventListener('click', () => {
-    calculator.memoryClear();
-    alert("Memory Cleared");
-});
+document.querySelector('[data-action="memory-clear"]').addEventListener('click', () => calculator.memoryClear());
 
-// History Panel Logic
+// History Panel Toggle
 const historyPanel = document.getElementById('history-panel');
 const toggleHistoryBtn = document.getElementById('toggle-history');
 const closeHistoryBtn = document.getElementById('close-history');
