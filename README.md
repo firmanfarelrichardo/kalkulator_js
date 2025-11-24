@@ -1,6 +1,6 @@
-# Pro-Calc Professional 🧮
+# Kalkulator Javascript
 
-**Pro-Calc Professional** adalah aplikasi kalkulator berbasis web yang dirancang dengan antarmuka *Skeuomorphic* modern dan logika matematika tingkat lanjut. Proyek ini dibangun sebagai Tugas Akhir Praktikum Pemrograman Web Semester 5, menerapkan prinsip *Clean Code* dan *Object-Oriented Programming (OOP)* dalam JavaScript.
+**Kalkulator Javascript** adalah aplikasi kalkulator berbasis web yang dirancang dengan antarmuka modern dan logika matematika tingkat lanjut. Proyek ini dibangun sebagai Tugas Akhir Praktikum Pemrograman Web Semester 5, menerapkan prinsip *Clean Code* dan *Object-Oriented Programming (OOP)* dalam JavaScript.
 
 ![Pro-Calc Banner](screenshot/1.png)
 
@@ -11,8 +11,6 @@ Berikut adalah tampilan antarmuka aplikasi dalam berbagai kondisi:
 | Tampilan Utama | Panel Riwayat (History) | Responsif Mobile |
 |:---:|:---:|:---:|
 | ![Main Interface](screenshot/1.png) | ![History Panel](screenshot/2.png) | ![Mobile View](screenshot/3.png) |
-
-> *Catatan: Pastikan file gambar disimpan dalam folder bernama `screenshot` di root direktori proyek agar gambar di atas muncul.*
 
 ## ✨ Fitur Utama
 
