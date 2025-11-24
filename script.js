@@ -7,8 +7,8 @@ class Calculator {
 
     clear() {
         this.currentOperand = '';
-        this.previousOperand = '';
-        this.operation = undefined;
+        this.operationBuffer = [];
+        this.resetScreen = false;
     }
 
     clearEntry() {
@@ -16,55 +16,78 @@ class Calculator {
     }
 
     appendNumber(number) {
+        if (this.resetScreen) {
+            this.currentOperand = '';
+            this.resetScreen = false;
+        }
+
         if (number === '.' && this.currentOperand.includes('.')) return;
         this.currentOperand = this.currentOperand.toString() + number.toString();
     }
 
     chooseOperation(operation) {
         if (this.currentOperand === '') return;
-        if (this.previousOperand !== '') {
-            this.compute();
-        }
-        this.operation = operation;
-        this.previousOperand = this.currentOperand;
+
+        this.operationBuffer.push(parseFloat(this.currentOperand));
+        this.operationBuffer.push(operation);
+        
         this.currentOperand = '';
     }
 
     compute() {
-        let computation;
-        const prev = parseFloat(this.previousOperand);
-        const current = parseFloat(this.currentOperand);
+        if (this.currentOperand === '' && this.operationBuffer.length === 0) return;
 
-        if (isNaN(prev) || isNaN(current)) return;
-
-        switch (this.operation) {
-            case '+':
-                computation = prev + current;
-                break;
-            case '-':
-                computation = prev - current;
-                break;
-            case '×':
-            case 'x':
-            case '*':
-                computation = prev * current;
-                break;
-            case '÷':
-            case '/':
-                if (current === 0) {
-                    alert("Tidak bisa membagi dengan nol!");
-                    this.clear();
-                    return;
-                }
-                computation = prev / current;
-                break;
-            default:
-                return;
+        if (this.currentOperand !== '') {
+            this.operationBuffer.push(parseFloat(this.currentOperand));
         }
 
-        this.currentOperand = computation;
-        this.operation = undefined;
-        this.previousOperand = '';
+        let tempBuffer = [];
+        let i = 0;
+
+        while (i < this.operationBuffer.length) {
+            let currentItem = this.operationBuffer[i];
+
+            if (currentItem === '×' || currentItem === '÷') {
+                let prevNum = tempBuffer.pop();
+                let nextNum = this.operationBuffer[i + 1];
+                let result;
+
+                if (currentItem === '×') {
+                    result = prevNum * nextNum;
+                } else if (currentItem === '÷') {
+                    if (nextNum === 0) {
+                        alert("Tidak bisa membagi dengan nol!");
+                        this.clear();
+                        this.updateDisplay();
+                        return;
+                    }
+                    result = prevNum / nextNum;
+                }
+
+                tempBuffer.push(result);
+                i += 2; 
+            } else {
+                tempBuffer.push(currentItem);
+                i++;
+            }
+        }
+
+        let finalResult = tempBuffer[0];
+
+        for (let j = 1; j < tempBuffer.length; j += 2) {
+            let operator = tempBuffer[j];
+            let nextNum = tempBuffer[j + 1];
+
+            if (operator === '+') {
+                finalResult += nextNum;
+            } else if (operator === '-') {
+                finalResult -= nextNum;
+            }
+        }
+
+        this.currentOperand = finalResult;
+        this.operationBuffer = [];
+        this.resetScreen = true;
     }
 
     getDisplayNumber(number) {
@@ -88,9 +111,9 @@ class Calculator {
 
     updateDisplay() {
         this.currentOperandTextElement.innerText = this.getDisplayNumber(this.currentOperand);
-        if (this.operation != null) {
-            this.previousOperandTextElement.innerText = 
-                `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`;
+        
+        if (this.operationBuffer.length > 0) {
+            this.previousOperandTextElement.innerText = this.operationBuffer.join(' ');
         } else {
             this.previousOperandTextElement.innerText = '';
         }
