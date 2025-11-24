@@ -3,81 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classic Pro-Calc</title>
+    <title>Pro-Calc Professional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500&display=swap');
         .font-lcd { font-family: 'Orbitron', monospace; }
         
-        /* Custom Scrollbar untuk History */
+        /* Custom Scrollbar for History Panel */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-neutral-800 min-h-screen flex items-center justify-center p-4 font-sans selection:bg-cyan-200">
+<body class="bg-neutral-800 min-h-screen flex items-center justify-center p-4 font-sans select-none overflow-hidden">
 
-    <main class="relative bg-gray-100 p-6 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-full max-w-[360px] border-4 border-gray-200">
+    <main class="relative bg-gray-100 p-6 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.6)] w-full max-w-[380px] border-4 border-gray-300 z-10">
         
-        <div class="mb-6 bg-[#b4c2cd] p-1 rounded-lg shadow-[inset_0_2px_8px_rgba(0,0,0,0.4)] border-b-2 border-white/50">
-            <div class="bg-[#9eaebc] h-24 rounded flex flex-col items-end justify-between p-3 font-lcd shadow-inner relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none"></div>
+        <div class="mb-5 bg-[#b4c2cd] p-1.5 rounded-xl shadow-[inset_0_2px_8px_rgba(0,0,0,0.3)] border-b border-white/60">
+            <div class="bg-[#9eaebc] h-28 rounded-lg flex flex-col items-end justify-between p-4 font-lcd shadow-inner relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2/3 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
                 
-                <div data-previous-operand class="text-slate-600 text-sm h-5 font-semibold tracking-widest z-10"></div>
-                <div data-current-operand class="text-slate-800 text-4xl font-bold tracking-widest z-10 drop-shadow-sm">0</div>
+                <div data-previous-operand class="text-slate-600 text-xs h-5 font-semibold tracking-widest z-10 truncate w-full text-right"></div>
+                <div data-current-operand class="text-slate-800 text-4xl font-bold tracking-widest z-10 drop-shadow-sm truncate w-full text-right">0</div>
             </div>
         </div>
 
-        <div class="flex justify-between mb-4 px-1 gap-2">
-            <button class="flex-1 py-2 rounded-md bg-red-800 text-white text-xs font-bold shadow-sm border-t border-red-600 active:translate-y-0.5 transition-transform" data-action="clear">C</button>
-            <button class="flex-1 py-2 rounded-md bg-red-800 text-white text-xs font-bold shadow-sm border-t border-red-600 active:translate-y-0.5 transition-transform" data-action="clear-entry">CE</button>
-            <button class="flex-1 py-2 rounded-md bg-gray-600 text-white text-xs font-bold shadow-sm border-t border-gray-500 active:translate-y-0.5 transition-transform" data-action="memory-recall">MR</button>
+        <div class="flex justify-between mb-4 px-1 gap-3">
+            <button class="flex-1 py-2.5 rounded-lg bg-red-800 text-white text-[10px] font-bold shadow-sm border-t border-red-600 active:translate-y-0.5 transition-transform" data-action="clear">C</button>
+            <button class="flex-1 py-2.5 rounded-lg bg-red-800 text-white text-[10px] font-bold shadow-sm border-t border-red-600 active:translate-y-0.5 transition-transform" data-action="clear-entry">CE</button>
+            <button class="flex-1 py-2.5 rounded-lg bg-slate-600 text-white text-[10px] font-bold shadow-sm border-t border-slate-500 active:translate-y-0.5 transition-transform" data-action="memory-recall">MR</button>
         </div>
 
         <div class="grid grid-cols-4 gap-3 p-1">
             
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-action="memory-plus">M+</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-action="memory-minus">M-</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-action="memory-clear">Mc</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-operation="÷">÷</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-sm shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-action="memory-plus">M+</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-sm shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-action="memory-minus">M-</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-sm shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-action="memory-clear">MC</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-operation="÷">÷</button>
 
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>7</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>8</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>9</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-lg shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-operation="×">X</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>7</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>8</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>9</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-lg shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-operation="×">×</button>
 
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>4</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>5</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>6</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-2xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-operation="-">-</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>4</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>5</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>6</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-2xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-operation="-">-</button>
 
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>1</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>2</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>3</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>1</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>2</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>3</button>
             
-            <button class="row-span-2 h-full rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-2xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all flex items-center justify-center" data-operation="+">+</button>
+            <button class="row-span-2 h-full rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-2xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all flex items-center justify-center" data-operation="+">+</button>
 
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>0</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>.</button>
-            <button class="h-14 rounded-lg bg-gradient-to-b from-gray-700 to-black text-white font-bold text-2xl shadow-[0_4px_6px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-action="calculate">=</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>0</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-number>.</button>
+            <button class="h-14 rounded-xl bg-gradient-to-b from-gray-700 to-black text-white font-bold text-2xl shadow-[0_4px_5px_rgba(0,0,0,0.4)] border-t border-gray-600 active:shadow-none active:translate-y-1 transition-all" data-action="calculate">=</button>
         </div>
     </main>
 
-    <aside id="history-panel" class="fixed left-0 top-0 h-full w-72 bg-gray-100 text-gray-800 transform -translate-x-full transition-transform duration-300 shadow-2xl p-6 z-50 border-r border-gray-300">
-        <div class="flex justify-between items-center mb-6 border-b border-gray-300 pb-4">
-            <h3 class="text-xl font-bold font-lcd text-gray-700">PAPER TAPE</h3>
-            <button id="close-history" class="text-red-500 font-bold hover:text-red-700">✕</button>
+    <aside id="history-panel" class="fixed left-0 top-0 h-full w-80 bg-gray-50 text-gray-800 transform -translate-x-full transition-transform duration-300 shadow-2xl p-6 z-50 border-r border-gray-300 flex flex-col">
+        <div class="flex justify-between items-center mb-6 border-b-2 border-gray-200 pb-4">
+            <h3 class="text-xl font-bold font-lcd text-gray-700 tracking-wider">HISTORY</h3>
+            <button id="close-history" class="text-gray-400 hover:text-red-500 font-bold transition-colors text-xl">&times;</button>
         </div>
-        <ul id="history-list" class="space-y-3 font-mono text-sm opacity-80">
-            <li class="border-b border-dashed border-gray-400 pb-2">
-                <div class="text-right text-xs text-gray-500">5 + 3 × 2</div>
-                <div class="text-right text-lg font-bold">= 11</div>
-            </li>
-        </ul>
+        
+        <p class="text-xs text-gray-400 mb-2 font-mono">LAST 5 CALCULATIONS</p>
+        
+        <ul id="history-list" class="flex-1 space-y-4 overflow-y-auto pr-2">
+            </ul>
+        
+        <div class="mt-auto text-center text-xs text-gray-400 pt-4 border-t border-gray-200">
+            Pro-Calc v1.0
+        </div>
     </aside>
 
-    <button id="toggle-history" class="fixed bottom-4 left-4 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-colors z-40">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <button id="toggle-history" class="fixed bottom-6 left-6 bg-gray-900 text-white p-4 rounded-full shadow-lg hover:bg-gray-700 hover:scale-110 transition-all z-40 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-180 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
     </button>
