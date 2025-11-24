@@ -29,12 +29,32 @@ class Calculator {
             this.currentOperand = '';
             this.resetScreen = false;
         }
-        if (number === '.' && this.currentOperand.includes('.')) return;
+        
+        // Fix: Input titik di awal otomatis jadi "0."
+        if (number === '.') {
+            if (this.currentOperand.includes('.')) return;
+            if (this.currentOperand === '') {
+                this.currentOperand = '0.';
+                return;
+            }
+        }
+
         this.currentOperand = this.currentOperand.toString() + number.toString();
     }
 
     chooseOperation(operation) {
-        if (this.currentOperand === '') return;
+        // Fix: Support Unary Minus (Input angka negatif di awal)
+        if (this.currentOperand === '') {
+            if (operation === '-') {
+                this.currentOperand = '-';
+                return;
+            }
+            return;
+        }
+
+        // Fix: Mencegah input operator jika layar hanya berisi "-"
+        if (this.currentOperand === '-') return;
+
         this.operationBuffer.push(parseFloat(this.currentOperand));
         this.operationBuffer.push(operation);
         this.currentOperand = '';
@@ -42,6 +62,7 @@ class Calculator {
 
     compute() {
         if (this.currentOperand === '' && this.operationBuffer.length === 0) return;
+        if (this.currentOperand === '-') return; // Safety check
 
         let expressionString = this.operationBuffer.join(' ') + ' ' + this.currentOperand;
 
@@ -49,11 +70,14 @@ class Calculator {
             this.operationBuffer.push(parseFloat(this.currentOperand));
         }
 
+        // --- Logic PEMDAS/BODMAS ---
         let tempBuffer = [];
         let i = 0;
 
+        // Pass 1: Perkalian & Pembagian
         while (i < this.operationBuffer.length) {
             let currentItem = this.operationBuffer[i];
+            
             if (currentItem === '×' || currentItem === '÷') {
                 let prevNum = tempBuffer.pop();
                 let nextNum = this.operationBuffer[i + 1];
@@ -70,7 +94,9 @@ class Calculator {
                     }
                     result = prevNum / nextNum;
                 }
-                tempBuffer.push(result);
+                
+                // Fix: Presisi Floating Point (0.1 + 0.2)
+                tempBuffer.push(parseFloat(result.toPrecision(12)));
                 i += 2; 
             } else {
                 tempBuffer.push(currentItem);
@@ -78,16 +104,20 @@ class Calculator {
             }
         }
 
+        // Pass 2: Penambahan & Pengurangan
         let finalResult = tempBuffer[0];
         for (let j = 1; j < tempBuffer.length; j += 2) {
             let operator = tempBuffer[j];
             let nextNum = tempBuffer[j + 1];
+            
             if (operator === '+') finalResult += nextNum;
             else if (operator === '-') finalResult -= nextNum;
         }
 
-        this.addToHistory(expressionString, finalResult);
+        // Final Precision check
+        finalResult = parseFloat(finalResult.toPrecision(12));
 
+        this.addToHistory(expressionString, finalResult);
         this.currentOperand = finalResult;
         this.operationBuffer = [];
         this.resetScreen = true;
@@ -95,7 +125,7 @@ class Calculator {
 
     memoryClear() {
         this.memory = 0;
-        alert("Memory Cleared");
+        this.currentOperand = ''; // Optional feedback visual
     }
 
     memoryRecall() {
@@ -103,30 +133,31 @@ class Calculator {
     }
 
     memoryPlus() {
+        if (this.currentOperand === '') return;
         const current = parseFloat(this.currentOperand);
         if (isNaN(current)) return;
         this.memory += current;
+        this.resetScreen = true;
     }
 
     memoryMinus() {
+        if (this.currentOperand === '') return;
         const current = parseFloat(this.currentOperand);
         if (isNaN(current)) return;
         this.memory -= current;
+        this.resetScreen = true;
     }
 
     addToHistory(expression, result) {
         this.history.unshift({ expression, result });
-        
         if (this.history.length > 5) {
             this.history.pop();
         }
-        
         this.updateHistoryUI();
     }
 
     updateHistoryUI() {
         this.historyListElement.innerHTML = '';
-        
         this.history.forEach(item => {
             const li = document.createElement('li');
             li.className = "border-b border-dashed border-gray-400 pb-2 mb-2";
@@ -139,11 +170,12 @@ class Calculator {
     }
 
     getDisplayNumber(number) {
+        if (number === '-') return '-'; 
         const stringNumber = number.toString();
         const integerDigits = parseFloat(stringNumber.split('.')[0]);
         const decimalDigits = stringNumber.split('.')[1];
-        let integerDisplay;
         
+        let integerDisplay;
         if (isNaN(integerDigits)) integerDisplay = '';
         else integerDisplay = integerDigits.toLocaleString('en', { maximumFractionDigits: 0 });
 
@@ -161,6 +193,7 @@ class Calculator {
     }
 }
 
+// --- INITIALIZATION ---
 const previousOperandTextElement = document.querySelector('[data-previous-operand]');
 const currentOperandTextElement = document.querySelector('[data-current-operand]');
 const historyListElement = document.getElementById('history-list');
@@ -196,13 +229,19 @@ document.querySelector('[data-action="clear-entry"]').addEventListener('click', 
     calculator.updateDisplay();
 });
 
+// Memory Buttons
 document.querySelector('[data-action="memory-plus"]').addEventListener('click', () => {
     calculator.memoryPlus();
-    calculator.resetScreen = true;
+    // Visual feedback kecil (opsional, reset screen agar user tahu input tersimpan)
+    const prev = currentOperandTextElement.innerText;
+    currentOperandTextElement.innerText = "Saved!";
+    setTimeout(() => currentOperandTextElement.innerText = prev, 500);
 });
 document.querySelector('[data-action="memory-minus"]').addEventListener('click', () => {
     calculator.memoryMinus();
-    calculator.resetScreen = true;
+    const prev = currentOperandTextElement.innerText;
+    currentOperandTextElement.innerText = "Saved!";
+    setTimeout(() => currentOperandTextElement.innerText = prev, 500);
 });
 document.querySelector('[data-action="memory-recall"]').addEventListener('click', () => {
     calculator.memoryRecall();
@@ -210,8 +249,10 @@ document.querySelector('[data-action="memory-recall"]').addEventListener('click'
 });
 document.querySelector('[data-action="memory-clear"]').addEventListener('click', () => {
     calculator.memoryClear();
+    alert("Memory Cleared");
 });
 
+// History Panel Logic
 const historyPanel = document.getElementById('history-panel');
 const toggleHistoryBtn = document.getElementById('toggle-history');
 const closeHistoryBtn = document.getElementById('close-history');
@@ -224,6 +265,7 @@ closeHistoryBtn.addEventListener('click', () => {
     historyPanel.classList.add('-translate-x-full');
 });
 
+// Keyboard Support
 document.addEventListener('keydown', (e) => {
     if (e.key >= 0 && e.key <= 9) {
         calculator.appendNumber(e.key);
