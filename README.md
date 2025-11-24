@@ -4,7 +4,7 @@
 
 ![Pro-Calc Banner](screenshot/1.png)
 
-## 📸 Screenshots
+## Screenshots
 
 Berikut adalah tampilan antarmuka aplikasi dalam berbagai kondisi:
 
@@ -12,7 +12,7 @@ Berikut adalah tampilan antarmuka aplikasi dalam berbagai kondisi:
 |:---:|:---:|:---:|
 | ![Main Interface](screenshot/1.png) | ![History Panel](screenshot/2.png) | ![Mobile View](screenshot/3.png) |
 
-## ✨ Fitur Utama
+## Fitur Utama
 
 Aplikasi ini bukan sekadar kalkulator biasa, tetapi mencakup fitur produktivitas lengkap:
 
@@ -23,7 +23,7 @@ Aplikasi ini bukan sekadar kalkulator biasa, tetapi mencakup fitur produktivitas
 * **Skeuomorphic Design:** Desain antarmuka hitam-putih yang realistis, bersih, dan estetik menggunakan **Tailwind CSS**.
 * **Error Handling:** Penanganan cerdas untuk pembagian nol dan input yang tidak valid.
 
-## 🛠️ Teknologi yang Digunakan
+## Teknologi yang Digunakan
 
 Proyek ini dibangun tanpa ketergantungan *library* javascript eksternal yang berat (Vanilla JS), menjadikannya sangat ringan dan cepat.
 
@@ -31,7 +31,7 @@ Proyek ini dibangun tanpa ketergantungan *library* javascript eksternal yang ber
 * **Tailwind CSS (via CDN):** Framework *utility-first* untuk styling antarmuka yang cepat dan responsif.
 * **JavaScript (ES6+):** Logika inti menggunakan *Classes* dan manajemen *State* yang terenkapsulasi.
 
-## 🚀 Cara Penggunaan
+## Cara Penggunaan
 
 1.  **Clone Repositori ini:**
     ```bash
@@ -40,7 +40,7 @@ Proyek ini dibangun tanpa ketergantungan *library* javascript eksternal yang ber
 2.  **Buka Aplikasi:**
     Cukup buka file `index.html` di browser modern apa pun (Chrome, Edge, Firefox). Tidak perlu instalasi Node.js atau server khusus.
 
-## ⌨️ Shortcut Keyboard
+## Shortcut Keyboard
 
 Untuk produktivitas maksimal, gunakan tombol berikut:
 
